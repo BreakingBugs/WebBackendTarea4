@@ -92,6 +92,18 @@ public class ItemService {
         }
     }
 
+    @GET
+    @Path("/search")
+    @Produces("application/json")
+    public Response getItemByName(@QueryParam("name") String name) {
+        Item p = itemController.getItemByName(name);
+        if (p != null) {
+            return Response.ok(p).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @PUT
     @Path("/{id: [0-9]*}")
     @Consumes("application/json")

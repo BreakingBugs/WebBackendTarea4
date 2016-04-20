@@ -91,15 +91,15 @@ public class ItemController {
 
 
     public Item getItemByName(String name) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
-        Root<Item> root = cq.from(Item.class);
-        cq.select(root);
-        cq.where(cb.equal(root.get("name"), name));
-        TypedQuery<Item> query = em.createQuery(cq);
-        Item i = query.getSingleResult();
-
-        return i;
+        Item item;
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            item = mapper.getItemByName(name);
+        } finally {
+            session.close();
+        }
+        return item;
     }
 
     public void addItem(Item p) {
