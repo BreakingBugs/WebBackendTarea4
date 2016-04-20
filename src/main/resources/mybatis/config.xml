@@ -15,6 +15,6 @@
     </environment>
   </environments>
   <mappers>
-    <mapper resource="mybatis/mappers/ItemMapper.xml"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.ItemMapper"/>
   </mappers>
 </configuration>
