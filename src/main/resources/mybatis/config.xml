@@ -16,5 +16,6 @@
   </environments>
   <mappers>
     <mapper class="py.una.pol.web.tarea4.mapper.ItemMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.ProviderMapper"/>
   </mappers>
 </configuration>

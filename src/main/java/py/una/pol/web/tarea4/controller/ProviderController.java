@@ -1,5 +1,11 @@
 package py.una.pol.web.tarea4.controller;
 
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import py.una.pol.web.tarea4.mapper.ItemMapper;
+import py.una.pol.web.tarea4.mapper.ProviderMapper;
 import py.una.pol.web.tarea4.model.Item;
 import py.una.pol.web.tarea4.model.Order;
 import py.una.pol.web.tarea4.model.Provider;
@@ -12,6 +18,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Stateless
@@ -23,13 +31,29 @@ public class ProviderController {
     ItemController itemController;
 
     public List<Provider> getProviders() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Provider> cq = cb.createQuery(Provider.class);
-        Root<Provider> root = cq.from(Provider.class);
-        cq.select(root);
-        TypedQuery<Provider> query = em.createQuery(cq);
-
-        return query.getResultList();
+        String resource = "mybatis/config.xml";
+        InputStream inputStream;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+            SqlSession session = sqlSessionFactory.openSession();
+            try {
+                ProviderMapper mapper = session.getMapper(ProviderMapper.class);
+                return mapper.getProviders();
+            } finally{
+                session.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<Provider> cq = cb.createQuery(Provider.class);
+//        Root<Provider> root = cq.from(Provider.class);
+//        cq.select(root);
+//        TypedQuery<Provider> query = em.createQuery(cq);
+//
+//        return query.getResultList();
     }
 
     public void addProvider(Provider p) {
