@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
   <typeAliases>
-    <typeAlias alias="Item" type="py.una.pol.web.tarea4.model.Item"/>
+    <package name="py.una.pol.web.tarea4.model"/>
   </typeAliases>
   <environments default="development">
     <environment id="development">
