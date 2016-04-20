@@ -2,10 +2,7 @@ package py.una.pol.web.tarea4.controller;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.SessionFactory;
@@ -14,10 +11,12 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import py.una.pol.web.tarea4.exceptions.DuplicateException;
+import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
 import py.una.pol.web.tarea4.mapper.ItemMapper;
 import py.una.pol.web.tarea4.model.Item;
 import py.una.pol.web.tarea4.model.Provider;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,19 +25,13 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
 @Stateless
 public class ItemController {
     private static final int ITEMS_MAX = 100;
-
-    private int batchSize = 20;
-
+    private static final int BATCH_SIZE = 20;
 
     @PersistenceContext(name = "Tarea3DS")
     private EntityManager em;
@@ -55,25 +48,20 @@ public class ItemController {
     @Inject
     private ItemController self;
 
+    @EJB
+    private MyBatisSingleton myBatis;
+
     //TODO: no traer todo de una
     public List<Item> getItems() {
-      String resource = "mybatis/config.xml";
-      InputStream inputStream;
-      try {
-        inputStream = Resources.getResourceAsStream(resource);
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession session = sqlSessionFactory.openSession();
+        List<Item> items;
+        SqlSession session = myBatis.getFactory().openSession();
         try {
-          ItemMapper mapper = session.getMapper(ItemMapper.class);
-          List<Item> items = mapper.getItems();
-          return items;
-        } finally{
-          session.close();
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            items = mapper.getItems();
+        } finally {
+            session.close();
         }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return null;
+        return items;
     }
 
     private void fetchItemsAndStream(OutputStream outputStream) throws Exception {
@@ -127,7 +115,7 @@ public class ItemController {
     }
 
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) //BMT en una trx
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void tryAddItem(Item p) throws DuplicateException {
         try {
             em.persist(p);
@@ -142,7 +130,7 @@ public class ItemController {
         for (Item item : items) {
             i++;
             addItem(item);
-            if (i % batchSize == 0) {
+            if (i % BATCH_SIZE == 0) {
                 try {
                     em.flush();
                 } catch (ConstraintViolationException e) {
@@ -158,25 +146,15 @@ public class ItemController {
     }
 
     public Item getItem(Integer id) {
-      String resource = "mybatis/config.xml";
-      InputStream inputStream;
-      try {
-        inputStream = Resources.getResourceAsStream(resource);
-        // TODO: instantiate factory once
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession session = sqlSessionFactory.openSession();
+        Item item;
+        SqlSession session = myBatis.getFactory().openSession();
         try {
-          ItemMapper mapper = session.getMapper(ItemMapper.class);
-          Item item = mapper.getItem(id);
-          return item;
-        } finally{
-          session.close();
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            item = mapper.getItem(id);
+        } finally {
+            session.close();
         }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      return em.find(Item.class, id);
+        return item;
     }
 
     public Item updateItem(Integer id, Item itemWithChanges) {
