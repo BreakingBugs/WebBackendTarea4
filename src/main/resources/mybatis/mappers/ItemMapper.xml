@@ -6,4 +6,7 @@
   <select id="getItem" resultType="Item">
     select * from Item where id = #{id}
   </select>
+  <select id="getItems" resultType="Item">
+    select * from Item
+  </select>
 </mapper>

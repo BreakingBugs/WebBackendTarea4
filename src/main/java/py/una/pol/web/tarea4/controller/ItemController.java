@@ -55,18 +55,25 @@ public class ItemController {
     @Inject
     private ItemController self;
 
-    public StreamingOutput getItems() {
-        return new StreamingOutput() {
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-                try {
-                    fetchItemsAndStream(outputStream);
-                } catch (Exception e) {
-                    Logger logger = LoggerFactory.getLogger(ItemController.class);
-                    logger.error(e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        };
+    //TODO: no traer todo de una
+    public List<Item> getItems() {
+      String resource = "mybatis/config.xml";
+      InputStream inputStream;
+      try {
+        inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+          ItemMapper mapper = session.getMapper(ItemMapper.class);
+          List<Item> items = mapper.getItems();
+          return items;
+        } finally{
+          session.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return null;
     }
 
     private void fetchItemsAndStream(OutputStream outputStream) throws Exception {
