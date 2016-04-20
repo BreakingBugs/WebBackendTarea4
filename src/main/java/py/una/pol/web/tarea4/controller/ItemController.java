@@ -2,6 +2,10 @@ package py.una.pol.web.tarea4.controller;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.SessionFactory;
@@ -10,6 +14,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import py.una.pol.web.tarea4.exceptions.DuplicateException;
+import py.una.pol.web.tarea4.mapper.ItemMapper;
 import py.una.pol.web.tarea4.model.Item;
 import py.una.pol.web.tarea4.model.Provider;
 
@@ -24,6 +29,7 @@ import javax.persistence.criteria.Root;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -145,7 +151,25 @@ public class ItemController {
     }
 
     public Item getItem(Integer id) {
-        return em.find(Item.class, id);
+      String resource = "mybatis/config.xml";
+      InputStream inputStream;
+      try {
+        inputStream = Resources.getResourceAsStream(resource);
+        // TODO: instantiate factory once
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+          ItemMapper mapper = session.getMapper(ItemMapper.class);
+          Item item = mapper.getItem(id);
+          return item;
+        } finally{
+          session.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      return em.find(Item.class, id);
     }
 
     public Item updateItem(Integer id, Item itemWithChanges) {
