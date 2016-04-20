@@ -1,4 +1,4 @@
-package py.una.pol.web.tarea3.rest;
+package py.una.pol.web.tarea4.rest;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import py.una.pol.web.tarea3.controller.ItemController;
-import py.una.pol.web.tarea3.model.Item;
+import py.una.pol.web.tarea4.controller.ItemController;
+import py.una.pol.web.tarea4.model.Item;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

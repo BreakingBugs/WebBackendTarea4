@@ -1,4 +1,4 @@
-package py.una.pol.web.tarea3.exceptions;
+package py.una.pol.web.tarea4.exceptions;
 
 import javax.ejb.ApplicationException;
 

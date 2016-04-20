@@ -1,9 +1,9 @@
-package py.una.pol.web.tarea3.rest;
+package py.una.pol.web.tarea4.rest;
 
-import py.una.pol.web.tarea3.controller.CustomerController;
-import py.una.pol.web.tarea3.model.Customer;
-import py.una.pol.web.tarea3.model.Order;
-import py.una.pol.web.tarea3.model.Payment;
+import py.una.pol.web.tarea4.controller.CustomerController;
+import py.una.pol.web.tarea4.model.Customer;
+import py.una.pol.web.tarea4.model.Order;
+import py.una.pol.web.tarea4.model.Payment;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

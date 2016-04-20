@@ -1,4 +1,4 @@
-package py.una.pol.web.tarea3.model;
+package py.una.pol.web.tarea4.model;
 
 import javax.persistence.*;
 import java.io.Serializable;

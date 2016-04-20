@@ -1,8 +1,8 @@
-package py.una.pol.web.tarea3.rest;
+package py.una.pol.web.tarea4.rest;
 
-import py.una.pol.web.tarea3.controller.ProviderController;
-import py.una.pol.web.tarea3.model.Order;
-import py.una.pol.web.tarea3.model.Provider;
+import py.una.pol.web.tarea4.controller.ProviderController;
+import py.una.pol.web.tarea4.model.Order;
+import py.una.pol.web.tarea4.model.Provider;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

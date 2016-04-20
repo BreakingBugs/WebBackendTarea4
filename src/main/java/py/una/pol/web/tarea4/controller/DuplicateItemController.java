@@ -1,7 +1,7 @@
-package py.una.pol.web.tarea3.controller;
+package py.una.pol.web.tarea4.controller;
 
-import py.una.pol.web.tarea3.model.DuplicateItem;
-import py.una.pol.web.tarea3.model.Item;
+import py.una.pol.web.tarea4.model.DuplicateItem;
+import py.una.pol.web.tarea4.model.Item;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

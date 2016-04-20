@@ -1,7 +1,5 @@
-package py.una.pol.web.tarea3.model;
+package py.una.pol.web.tarea4.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 public class Order implements Serializable {

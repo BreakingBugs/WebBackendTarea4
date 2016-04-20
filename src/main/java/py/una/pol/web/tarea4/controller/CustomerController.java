@@ -1,7 +1,7 @@
-package py.una.pol.web.tarea3.controller;
+package py.una.pol.web.tarea4.controller;
 
-import py.una.pol.web.tarea3.exceptions.OutOfStockException;
-import py.una.pol.web.tarea3.model.*;
+import py.una.pol.web.tarea4.exceptions.OutOfStockException;
+import py.una.pol.web.tarea4.model.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
