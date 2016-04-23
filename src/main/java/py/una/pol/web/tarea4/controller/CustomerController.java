@@ -5,6 +5,7 @@ import py.una.pol.web.tarea4.exceptions.OutOfStockException;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
 import py.una.pol.web.tarea4.mapper.CustomerMapper;
 import py.una.pol.web.tarea4.mapper.ItemMapper;
+import py.una.pol.web.tarea4.mapper.PaymentMapper;
 import py.una.pol.web.tarea4.model.*;
 
 import javax.ejb.Stateless;
@@ -105,9 +106,16 @@ public class CustomerController {
 
         Double monto = payment.getAmount();
         c.setAmountToPay(c.getAmountToPay() - monto);
-        c.getPayments().add(payment);
+        updateCustomer(c.getId(), c);
         payment.setCustomer(c);
-        em.persist(payment);
+
+        SqlSession session = myBatis.getFactory().openSession();
+        try{
+            PaymentMapper paymentMapper = session.getMapper(PaymentMapper.class);
+            paymentMapper.insertPayment(payment);
+        } finally {
+            session.close();
+        }
         return true;
     }
 
