@@ -1,5 +1,6 @@
 package py.una.pol.web.tarea4.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import py.una.pol.web.tarea4.model.Item;
 

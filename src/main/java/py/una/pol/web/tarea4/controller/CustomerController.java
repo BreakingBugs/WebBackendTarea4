@@ -1,16 +1,16 @@
 package py.una.pol.web.tarea4.controller;
 
+import org.apache.ibatis.session.SqlSession;
 import py.una.pol.web.tarea4.exceptions.OutOfStockException;
+import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
+import py.una.pol.web.tarea4.mapper.CustomerMapper;
+import py.una.pol.web.tarea4.mapper.ItemMapper;
 import py.una.pol.web.tarea4.model.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 
@@ -22,18 +22,30 @@ public class CustomerController {
     @Inject
     ItemController itemController;
 
-    public List<Customer> getCustomers() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
-        Root<Customer> root = cq.from(Customer.class);
-        cq.select(root);
-        TypedQuery<Customer> query = em.createQuery(cq);
+    @Inject
+    private MyBatisSingleton myBatis;
 
-        return query.getResultList();
+    public List<Customer> getCustomers() {
+        List<Customer> customers;
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            customers = mapper.getCustomers();
+        } finally {
+            session.close();
+        }
+        return customers;
     }
 
     public void addCustomer(Customer c) {
-        em.persist(c);
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            mapper.insertCustomer(c);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public void sellToClient(Integer clientId, List<Order> orders) throws OutOfStockException, RuntimeException {
@@ -100,23 +112,44 @@ public class CustomerController {
     }
 
     public Customer getCustomer(Integer id) {
-        return em.find(Customer.class, id);
+        Customer customer;
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            customer = mapper.getCustomer(id);
+        } finally {
+            session.close();
+        }
+        return customer;
     }
 
     public Customer updateCustomer(Integer id, Customer customerWithChanges) {
+        SqlSession session = myBatis.getFactory().openSession();
         Customer c = getCustomer(id);
-        if (c != null) {
-            if (customerWithChanges.getName() != null && customerWithChanges.getName().compareTo(c.getName()) != 0) {
-                c.setName(customerWithChanges.getName());
-            }
+        if(customerWithChanges.getName() != null && customerWithChanges.getName().compareTo(c.getName()) != 0) {
+            c.setName(customerWithChanges.getName());
+        }
+        if(customerWithChanges.getAmountToPay() != null && customerWithChanges.getAmountToPay().compareTo(c.getAmountToPay()) != 0) {
+            c.setAmountToPay(customerWithChanges.getAmountToPay());
+        }
+        try {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            mapper.updateCustomer(c);
+        }
+        finally {
+            session.close();
         }
         return c;
     }
 
     public void removeCustomer(final Integer id) {
-        Customer c = getCustomer(id);
-        if (c != null) {
-            em.remove(c);
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            mapper.deleteCustomer(id);
+        }
+        finally {
+            session.close();
         }
     }
 }
