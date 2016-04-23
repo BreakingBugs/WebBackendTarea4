@@ -3,9 +3,7 @@ package py.una.pol.web.tarea4.controller;
 import org.apache.ibatis.session.SqlSession;
 import py.una.pol.web.tarea4.exceptions.OutOfStockException;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
-import py.una.pol.web.tarea4.mapper.CustomerMapper;
-import py.una.pol.web.tarea4.mapper.ItemMapper;
-import py.una.pol.web.tarea4.mapper.PaymentMapper;
+import py.una.pol.web.tarea4.mapper.*;
 import py.una.pol.web.tarea4.model.*;
 
 import javax.ejb.Stateless;
@@ -55,29 +53,36 @@ public class CustomerController {
             throw new RuntimeException();
         }
 
-        Sale s = new Sale();
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            Sale s = new Sale();
+            s.setCustomer(c);
+            SaleMapper saleMapper = session.getMapper(SaleMapper.class);
+            saleMapper.insertSale(s);
+            Double totalAmount = 0.0;
 
-        Double totalAmount = 0.0;
+            for (Order o : orders) {
+                SaleOrder so = createSaleOrder(o);
+                so.setSale(s);
+                SaleOrderMapper somapper = session.getMapper(SaleOrderMapper.class);
+                somapper.insertSaleOrder(so);
 
-        for (Order o : orders) {
-            SaleOrder so = createSaleOrder(o);
-            so.setSale(s);
-            em.persist(so);
-            s.getOrders().add(so);
+                Item i = so.getItem();
+                Double total = i.getPrice() * so.getAmount();
+                totalAmount += total;
 
-            Item i = so.getItem();
-            Double total = i.getPrice() * so.getAmount();
-            totalAmount += total;
+                i.setStock(i.getStock() - so.getAmount());
+                //TODO Persistir cambio de stock de item
+            }
+            s.setAmount(totalAmount);
+            saleMapper.updateSale(s);
 
-            i.setStock(i.getStock() - so.getAmount());
-            em.merge(i);
+            c.setAmountToPay(c.getAmountToPay() + s.getAmount());
+            updateCustomer(c.getId(), c);
         }
-        s.setAmount(totalAmount);
-        s.setCustomer(c);
-        em.persist(s);
-        c.getSales().add(s);
-        c.setAmountToPay(c.getAmountToPay() + s.getAmount());
-        em.merge(c);
+        finally {
+            session.close();
+        }
     }
 
     public SaleOrder createSaleOrder(Order o) throws OutOfStockException {

@@ -1,8 +1,7 @@
 package py.una.pol.web.tarea4.mapper;
 
 import org.apache.ibatis.annotations.*;
-import py.una.pol.web.tarea4.model.Customer;
-import py.una.pol.web.tarea4.model.Payment;
+import py.una.pol.web.tarea4.model.*;
 
 import java.util.List;
 
@@ -14,7 +13,8 @@ public interface CustomerMapper {
   @Select("SELECT * FROM Customer")
   @Results({
           @Result(property = "id", column = "id"),
-          @Result(property = "payments", column = "id", javaType = List.class, many = @Many(select = "getPaymentsByCustomer"))
+          @Result(property = "payments", column = "id", javaType = List.class, many = @Many(select = "getPaymentsByCustomer")),
+          @Result(property = "sales", column = "id", javaType = List.class, many = @Many(select = "getSalesByCustomer"))
   })
   List<Customer> getCustomers();
 
@@ -29,4 +29,18 @@ public interface CustomerMapper {
 
   @Select("SELECT * FROM Payment WHERE customer_id=#{id}")
   List<Payment> getPaymentsByCustomer(int id);
+
+  @Select("SELECT * FROM Sale WHERE customer_id=#{id}")
+  @Results({
+          @Result(property = "id", column = "id"),
+          @Result(property = "orders", column = "id", javaType = List.class, many = @Many(select = "getOrdersBySale"))
+  })
+  List<Sale> getSalesByCustomer(int id);
+
+  @Select("SELECT * FROM sale_order WHERE sale_id=#{id}")
+  @Results({
+          @Result(property = "id", column = "id"),
+          @Result(property = "item", column = "item_id", javaType = Item.class, one = @One(select = "py.una.pol.web.tarea4.mapper.ItemMapper.getItem"))
+  })
+  List<SaleOrder> getOrdersBySale(int id);
 }
