@@ -117,11 +117,19 @@ public class ItemController {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void tryAddItem(Item p) throws DuplicateException {
+        SqlSession session = myBatis.getFactory().openSession();
         try {
-            em.persist(p);
-        } catch (PersistenceException e) {
-            throw new DuplicateException();
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            mapper.insertItem(p);
         }
+        finally {
+            session.close();
+        }
+//        try {
+//            em.persist(p);
+//        } catch (PersistenceException e) {
+//            throw new DuplicateException();
+//        }
     }
 
     public int batchAddItem(List<Item> items) {
