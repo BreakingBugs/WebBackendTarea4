@@ -5,6 +5,7 @@
 <mapper namespace="py.una.pol.web.tarea4.mapper.ItemMapper">
     <resultMap id="itemResult" type="Item" autoMapping="true">
         <id property="id" column="id"/>
+        <association property="duplicate" resultMap="duplicateResult"/>
         <association property="provider" resultMap="providerResult"/>
     </resultMap>
 
@@ -12,16 +13,25 @@
         <id property="id" column="provider_id"/>
         <result property="name" column="provider_name"/>
     </resultMap>
+
+    <resultMap id="duplicateResult" type="DuplicateItem">
+        <id property="id" column="duplicate_id"/>
+        <result property="cantidad" column="duplicate_cantidad"/>
+    </resultMap>
+
     <select id="getItem" resultMap="itemResult">
         SELECT
             i.id,
             i.name,
             i.price,
             i.stock,
-            i.provider_id,
-            p.name AS provider_name
+            d.id       AS duplicate_id,
+            d.cantidad AS duplicate_cantidad,
+            p.id       AS provider_id,
+            p.name     AS provider_name
         FROM Item i
             LEFT OUTER JOIN Provider p ON p.id = i.provider_id
+            LEFT OUTER JOIN Producto_Duplicado d ON d.item_id = i.id
         WHERE i.id = #{id}
     </select>
 
@@ -31,22 +41,28 @@
             i.name,
             i.price,
             i.stock,
-            i.provider_id,
-            p.name AS provider_name
+            d.id       AS duplicate_id,
+            d.cantidad AS duplicate_cantidad,
+            p.id       AS provider_id,
+            p.name     AS provider_name
         FROM Item i
             LEFT OUTER JOIN Provider p ON p.id = i.provider_id
+            LEFT OUTER JOIN Producto_Duplicado d ON d.item_id = i.id
     </select>
 
     <select id="getItemByName" resultMap="itemResult">
         SELECT
-        i.id,
-        i.name,
-        i.price,
-        i.stock,
-        i.provider_id,
-        p.name AS provider_name
+            i.id,
+            i.name,
+            i.price,
+            i.stock,
+            d.id       AS duplicate_id,
+            d.cantidad AS duplicate_cantidad,
+            p.id       AS provider_id,
+            p.name     AS provider_name
         FROM Item i
-        LEFT OUTER JOIN Provider p ON p.id = i.provider_id
+            LEFT OUTER JOIN Provider p ON p.id = i.provider_id
+            LEFT OUTER JOIN Producto_Duplicado d ON d.item_id = i.id
         WHERE i.name = #{name}
     </select>
 </mapper>
