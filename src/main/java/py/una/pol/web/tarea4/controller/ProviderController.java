@@ -48,6 +48,7 @@ public class ProviderController {
         }
     }
 
+    //TODO: test this
     public boolean buyFromProvider(Integer providerId, List<Order> orders) {
         Provider p = this.getProvider(providerId);
         if (p == null) {
@@ -65,6 +66,7 @@ public class ProviderController {
                     i.setStock(i.getStock() + o.getAmount());
                 }
             }
+            itemController.updateItem(i.getId(), i);
         }
 
         return true;
