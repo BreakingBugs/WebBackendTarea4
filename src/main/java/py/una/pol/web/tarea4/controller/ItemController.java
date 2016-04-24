@@ -2,6 +2,7 @@ package py.una.pol.web.tarea4.controller;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -21,10 +22,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -89,7 +89,6 @@ public class ItemController {
         jg.close();
     }
 
-
     public Item getItemByName(String name) {
         Item item;
         SqlSession session = myBatis.getFactory().openSession();
@@ -114,21 +113,17 @@ public class ItemController {
         }
     }
 
-
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void tryAddItem(Item p) throws DuplicateException {
         SqlSession session = myBatis.getFactory().openSession();
         try {
             ItemMapper mapper = session.getMapper(ItemMapper.class);
             mapper.insertItem(p);
+        } catch (PersistenceException e) {
+            throw new DuplicateException();
         } finally {
             session.close();
         }
-//        try {
-//            em.persist(p);
-//        } catch (PersistenceException e) {
-//            throw new DuplicateException();
-//        }
     }
 
     public int batchAddItem(List<Item> items) {
