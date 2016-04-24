@@ -121,8 +121,7 @@ public class ItemController {
         try {
             ItemMapper mapper = session.getMapper(ItemMapper.class);
             mapper.insertItem(p);
-        }
-        finally {
+        } finally {
             session.close();
         }
 //        try {
@@ -166,29 +165,40 @@ public class ItemController {
     }
 
     public Item updateItem(Integer id, Item itemWithChanges) {
-        Item c = getItem(id);
-        if (c != null) {
-            if (itemWithChanges.getName() != null && itemWithChanges.getName().compareTo(c.getName()) != 0) {
-                c.setName(itemWithChanges.getName());
+        SqlSession session = myBatis.getFactory().openSession();
+        Item item = getItem(id);
+        if (item != null) {
+            if (itemWithChanges.getName() != null && itemWithChanges.getName().compareTo(item.getName()) != 0) {
+                item.setName(itemWithChanges.getName());
             }
-            if (itemWithChanges.getPrice() != null && itemWithChanges.getPrice().compareTo(c.getPrice()) != 0) {
-                c.setPrice(itemWithChanges.getPrice());
+            if (itemWithChanges.getPrice() != null && itemWithChanges.getPrice().compareTo(item.getPrice()) != 0) {
+                item.setPrice(itemWithChanges.getPrice());
             }
-            if (c.getProvider() == null ||
+            if (itemWithChanges.getStock() != null && itemWithChanges.getStock().compareTo(item.getStock()) != 0) {
+                item.setStock(itemWithChanges.getStock());
+            }
+            if (item.getProvider() == null ||
                     (itemWithChanges.getProvider() != null &&
-                            itemWithChanges.getProvider().getId().compareTo(c.getProvider().getId()) != 0)) {
-                c.setProvider(providerController.getProvider(itemWithChanges.getProvider().getId()));
+                            itemWithChanges.getProvider().getId().compareTo(item.getProvider().getId()) != 0)) {
+                item.setProvider(providerController.getProvider(itemWithChanges.getProvider().getId()));
             }
-            em.merge(c);
+            try {
+                ItemMapper mapper = session.getMapper(ItemMapper.class);
+                mapper.updateItem(item);
+            } finally {
+                session.close();
+            }
         }
-        return c;
+        return item;
     }
 
     public void removeItem(final Integer id) {
-        Item c = getItem(id);
-        if (c != null) {
-            em.remove(c);
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            mapper.deleteItem(id);
+        } finally {
+            session.close();
         }
     }
-
 }
