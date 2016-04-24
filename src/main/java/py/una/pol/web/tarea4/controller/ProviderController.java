@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.SQLClientInfoException;
 import java.util.List;
 
 @Stateless
@@ -38,7 +39,13 @@ public class ProviderController {
     }
 
     public void addProvider(Provider p) {
-        em.persist(p);
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            ProviderMapper mapper = session.getMapper(ProviderMapper.class);
+            mapper.insertProvider(p);
+        } finally {
+            session.close();
+        }
     }
 
     public boolean buyFromProvider(Integer providerId, List<Order> orders) {
@@ -58,7 +65,6 @@ public class ProviderController {
                     i.setStock(i.getStock() + o.getAmount());
                 }
             }
-
         }
 
         return true;
@@ -79,8 +85,15 @@ public class ProviderController {
     public Provider updateProvider(Integer id, Provider providerWithChanges) {
         Provider p = getProvider(id);
         if (p != null) {
+            SqlSession session = myBatis.getFactory().openSession();
             if (providerWithChanges.getName() != null && providerWithChanges.getName().compareTo(p.getName()) != 0) {
                 p.setName(providerWithChanges.getName());
+            }
+            try {
+                ProviderMapper mapper = session.getMapper(ProviderMapper.class);
+                mapper.updateProvider(p);
+            } finally {
+                session.close();
             }
         }
         return p;
@@ -89,7 +102,13 @@ public class ProviderController {
     public void removeProvider(final Integer id) {
         Provider p = getProvider(id);
         if (p != null) {
-            em.remove(p);
+            SqlSession session = myBatis.getFactory().openSession();
+            try {
+                ProviderMapper mapper = session.getMapper(ProviderMapper.class);
+                mapper.deleteProvider(id);
+            } finally {
+                session.close();
+            }
         }
     }
 

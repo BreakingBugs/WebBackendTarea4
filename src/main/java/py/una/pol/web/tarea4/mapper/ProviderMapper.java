@@ -1,10 +1,8 @@
 package py.una.pol.web.tarea4.mapper;
 
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
+import py.una.pol.web.tarea4.model.Customer;
 import py.una.pol.web.tarea4.model.Item;
 import py.una.pol.web.tarea4.model.Provider;
 
@@ -24,4 +22,13 @@ public interface ProviderMapper {
 
     @Select("SELECT * FROM Item WHERE provider_id=#{id}")
     List<Item> getItemsByProvider(int id);
+
+    @Insert("INSERT INTO provider(name) VALUES (#{name})")
+    void insertProvider(Provider p);
+
+    @Update("UPDATE provider SET name=#{name} WHERE id=#{id}")
+    void updateProvider(Provider p);
+
+    @Delete("DELETE FROM provider WHERE id=#{id}")
+    void deleteProvider(int id);
 }
