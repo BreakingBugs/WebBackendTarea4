@@ -35,13 +35,6 @@ public class ProviderController {
             session.close();
         }
         return providers;
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<Provider> cq = cb.createQuery(Provider.class);
-//        Root<Provider> root = cq.from(Provider.class);
-//        cq.select(root);
-//        TypedQuery<Provider> query = em.createQuery(cq);
-//
-//        return query.getResultList();
     }
 
     public void addProvider(Provider p) {
@@ -72,7 +65,15 @@ public class ProviderController {
     }
 
     public Provider getProvider(Integer id) {
-        return em.find(Provider.class, id);
+        Provider provider;
+        SqlSession session = myBatis.getFactory().openSession();
+        try {
+            ProviderMapper mapper = session.getMapper(ProviderMapper.class);
+            provider = mapper.getProvider(id);
+        } finally {
+            session.close();
+        }
+        return provider;
     }
 
     public Provider updateProvider(Integer id, Provider providerWithChanges) {
