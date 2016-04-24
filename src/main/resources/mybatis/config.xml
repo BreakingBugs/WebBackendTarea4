@@ -15,6 +15,13 @@
     </environment>
   </environments>
   <mappers>
-    <package name="py.una.pol.web.tarea4.mapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.CustomerMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.DuplicateItemMapper"/>
+    <mapper resource="mybatis/mappers/ItemMapper.xml"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.OrderMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.PaymentMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.ProviderMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.SaleMapper"/>
+    <mapper class="py.una.pol.web.tarea4.mapper.SaleOrderMapper"/>
   </mappers>
 </configuration>
