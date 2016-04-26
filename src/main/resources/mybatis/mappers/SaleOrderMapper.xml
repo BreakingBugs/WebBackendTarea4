@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.una.pol.web.tarea4.mapper.SaleOrderMapper">
+    <resultMap id="saleOrderResult" type="SaleOrder" autoMapping="true">
+        <id property="id" column="id"/>
+        <association property="item" resultMap="py.una.pol.web.tarea4.mapper.ItemMapper.itemResult" columnPrefix="item_"/>
+    </resultMap>
+
+    <select id="getSaleOrder" resultMap="saleOrderResult">
+        SELECT
+        so.id,
+        so.amount,
+        i.id       AS item_id,
+        i.name     AS item_name,
+        i.price    AS item_price,
+        i.stock    AS item_stock
+        FROM sale_order so
+        LEFT OUTER JOIN Item i ON i.id = so.item_id
+        WHERE so.id = #{id}
+    </select>
+
+    <select id="getSaleOrders" resultMap="saleOrderResult">
+        SELECT
+        so.id,
+        so.amount,
+        i.id       AS item_id,
+        i.name     AS item_name,
+        i.price    AS item_price,
+        i.stock    AS item_stock
+        FROM sale_order so
+        LEFT OUTER JOIN Item i ON i.id = so.item_id
+    </select>
+
+    <select id="getOrdersBySale" resultMap="saleOrderResult">
+        SELECT
+        so.id,
+        so.amount,
+        i.id       AS item_id,
+        i.name     AS item_name,
+        i.price    AS item_price,
+        i.stock    AS item_stock
+        FROM sale_order so
+        LEFT OUTER JOIN Item i ON i.id = so.item_id
+        WHERE so.sale_id = #{id}
+    </select>
+</mapper>

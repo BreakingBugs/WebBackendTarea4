@@ -72,7 +72,6 @@ public class CustomerController {
                 totalAmount += total;
 
                 i.setStock(i.getStock() - so.getAmount());
-                //TODO Persistir cambio de stock de item
                 itemController.updateItem(i.getId(), i);
             }
             s.setAmount(totalAmount);

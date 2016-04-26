@@ -22,6 +22,6 @@
     <mapper class="py.una.pol.web.tarea4.mapper.PaymentMapper"/>
     <mapper class="py.una.pol.web.tarea4.mapper.ProviderMapper"/>
     <mapper class="py.una.pol.web.tarea4.mapper.SaleMapper"/>
-    <mapper class="py.una.pol.web.tarea4.mapper.SaleOrderMapper"/>
+    <mapper resource="mybatis/mappers/SaleOrderMapper.xml"/>
   </mappers>
 </configuration>
