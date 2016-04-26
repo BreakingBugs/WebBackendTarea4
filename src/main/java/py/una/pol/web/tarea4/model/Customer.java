@@ -1,28 +1,21 @@
 package py.una.pol.web.tarea4.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity
-@Table(name = "customer")
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
 
     private Double amountToPay;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Payment> payments = new ArrayList<Payment>();
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Sale> sales = new ArrayList<Sale>();
 
     public Integer getId() {

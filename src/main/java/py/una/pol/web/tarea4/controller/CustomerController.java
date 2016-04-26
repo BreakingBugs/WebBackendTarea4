@@ -15,9 +15,6 @@ import java.util.List;
 
 @Stateless
 public class CustomerController {
-    @PersistenceContext(name = "Tarea3DS")
-    private EntityManager em;
-
     @Inject
     ItemController itemController;
 

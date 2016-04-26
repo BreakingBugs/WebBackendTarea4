@@ -1,16 +1,12 @@
 package py.una.pol.web.tarea4.controller;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
-import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.hibernate.SessionFactory;
+//import org.hibernate.exception.ConstraintViolationException;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import py.una.pol.web.tarea4.exceptions.DuplicateException;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
 import py.una.pol.web.tarea4.mapper.ItemMapper;
@@ -22,10 +18,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
-import java.io.OutputStream;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 @Stateless
@@ -33,11 +28,11 @@ public class ItemController {
     private static final int ITEMS_MAX = 100;
     private static final int BATCH_SIZE = 20;
 
-    @PersistenceContext(name = "Tarea3DS")
-    private EntityManager em;
+//    @PersistenceContext(name = "Tarea3DS")
+//    private EntityManager em;
 
-    @PersistenceUnit(unitName = "Tarea3DS")
-    private SessionFactory sessionFactory;
+//    @PersistenceUnit(unitName = "Tarea3DS")
+//    private SessionFactory sessionFactory;
 
     @Inject
     ProviderController providerController;
@@ -62,31 +57,6 @@ public class ItemController {
             session.close();
         }
         return items;
-    }
-
-    private void fetchItemsAndStream(OutputStream outputStream) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonGenerator jg = objectMapper.getFactory().createGenerator(outputStream);
-        jg.writeStartArray();
-
-        StatelessSession session = sessionFactory.openStatelessSession();
-        try {
-            ScrollableResults scrollableResults = session.createQuery("from Item order by id")
-                    .setReadOnly(true).setCacheable(false).setFetchSize(ITEMS_MAX).scroll(ScrollMode.FORWARD_ONLY);
-            while (scrollableResults.next()) {
-                Item i = (Item) scrollableResults.get()[0];
-                jg.writeObject(i);
-            }
-        } catch (Exception e) {
-            Logger logger = LoggerFactory.getLogger(ItemController.class);
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        jg.writeEndArray();
-        jg.close();
     }
 
     public Item getItemByName(String name) {
@@ -132,7 +102,7 @@ public class ItemController {
         for (Item item : items) {
             i++;
             addItem(item);
-            if (i % BATCH_SIZE == 0) {
+            /*if (i % BATCH_SIZE == 0) {
                 try {
                     em.flush();
                 } catch (ConstraintViolationException e) {
@@ -142,7 +112,7 @@ public class ItemController {
                 } finally {
                     em.clear();
                 }
-            }
+            }*/
         }
         return duplicates;
     }

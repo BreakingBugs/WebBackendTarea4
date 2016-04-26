@@ -35,7 +35,7 @@
         WHERE i.id = #{id}
     </select>
 
-    <select id="getItems" resultMap="itemResult">
+    <select id="getItems" resultMap="itemResult" fetchSize="100" resultSetType="FORWARD_ONLY">
         SELECT
             i.id,
             i.name,
