@@ -10,9 +10,6 @@ import py.una.pol.web.tarea4.model.Provider;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.sql.SQLClientInfoException;
 import java.util.List;
 
 @Stateless

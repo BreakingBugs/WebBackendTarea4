@@ -1,12 +1,7 @@
 package py.una.pol.web.tarea4.controller;
 
-
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
-//import org.hibernate.SessionFactory;
-//import org.hibernate.exception.ConstraintViolationException;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 import py.una.pol.web.tarea4.exceptions.DuplicateException;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
 import py.una.pol.web.tarea4.mapper.ItemMapper;
@@ -18,22 +13,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
-//import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 @Stateless
 public class ItemController {
-    private static final int ITEMS_MAX = 100;
-    private static final int BATCH_SIZE = 20;
-
-//    @PersistenceContext(name = "Tarea3DS")
-//    private EntityManager em;
-
-//    @PersistenceUnit(unitName = "Tarea3DS")
-//    private SessionFactory sessionFactory;
-
     @Inject
     ProviderController providerController;
 
@@ -46,7 +29,6 @@ public class ItemController {
     @EJB
     private MyBatisSingleton myBatis;
 
-    //TODO: no traer todo de una
     public List<Item> getItems() {
         List<Item> items;
         SqlSession session = myBatis.getFactory().openSession();
@@ -97,22 +79,9 @@ public class ItemController {
     }
 
     public int batchAddItem(List<Item> items) {
-        int i = 0;
         int duplicates = 0;
         for (Item item : items) {
-            i++;
             addItem(item);
-            /*if (i % BATCH_SIZE == 0) {
-                try {
-                    em.flush();
-                } catch (ConstraintViolationException e) {
-                    Logger logger = LoggerFactory.getLogger(ItemController.class);
-                    logger.error(e.getMessage());
-                    e.printStackTrace();
-                } finally {
-                    em.clear();
-                }
-            }*/
         }
         return duplicates;
     }

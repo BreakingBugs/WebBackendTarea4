@@ -3,18 +3,11 @@ package py.una.pol.web.tarea4.controller;
 import org.apache.ibatis.session.SqlSession;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
 import py.una.pol.web.tarea4.mapper.DuplicateItemMapper;
-import py.una.pol.web.tarea4.mapper.ItemMapper;
 import py.una.pol.web.tarea4.model.DuplicateItem;
 import py.una.pol.web.tarea4.model.Item;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Stateless

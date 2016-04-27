@@ -3,13 +3,14 @@ package py.una.pol.web.tarea4.controller;
 import org.apache.ibatis.session.SqlSession;
 import py.una.pol.web.tarea4.exceptions.OutOfStockException;
 import py.una.pol.web.tarea4.initialization.MyBatisSingleton;
-import py.una.pol.web.tarea4.mapper.*;
+import py.una.pol.web.tarea4.mapper.CustomerMapper;
+import py.una.pol.web.tarea4.mapper.PaymentMapper;
+import py.una.pol.web.tarea4.mapper.SaleMapper;
+import py.una.pol.web.tarea4.mapper.SaleOrderMapper;
 import py.una.pol.web.tarea4.model.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 
